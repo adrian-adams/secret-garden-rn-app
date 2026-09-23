@@ -1,0 +1,13 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+ 
+@import "nativewind/theme";
+
+@theme {
+    --color-sg-green: #0f342d;
+    --color-sg-olive: #d4e3d3;
+    --color-sg-lightgreen: #f1eeda;
+    --color-sg-locator: #f4f3e7;
+    --color-sg-ribbon: #eaecc6;
+}

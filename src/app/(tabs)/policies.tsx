@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-export default function Stores() {
+export default function Policies() {
     return (
         <View>
-            <Text>S</Text>
+            <Text>P</Text>
         </View>
     )
 }

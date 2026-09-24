@@ -10,4 +10,22 @@
     --color-sg-lightgreen: #f1eeda;
     --color-sg-locator: #f4f3e7;
     --color-sg-ribbon: #eaecc6;
+
+    --font-ls-black: spartan-black;
+    --font-ls-bold: league-spartan-bold;
+    --font-ls-extrabold: league-spartan-extrabold;
+    --font-ls-extralight: league-spartan-extralight;
+    --font-ls-light: league-spartan-light;
+    --font-ls-medium: league-spartan-medium;
+    --font-ls-regular: league-spartan-regular;
+    --font-ls-semibold: league-spartan-semibold;
+    --font-ls-thin: league-spartan-thin
+}
+
+@utility utility-button-primary {
+    @apply px-4 py-2 bg-sg-green text-white rounded-md active:bg-sg-lightgreen active:text-black;
+}
+
+@utility utility-flex-center {
+    @apply items-center justify-center;
 }

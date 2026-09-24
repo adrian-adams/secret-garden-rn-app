@@ -32,6 +32,22 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/LeagueSpartan-Black.ttf",
+            "./assets/fonts/fonts/LeagueSpartan-Bold.ttf",
+            "./assets/fonts/LeagueSpartan-ExtraBold.ttf",
+            "./assets/fonts/LeagueSpartan-ExtraLight.ttf",
+            "./assets/fonts/LeagueSpartan-Light.ttf",
+            "./assets/fonts/LeagueSpartan-Medium.ttf",
+            "./assets/fonts/LeagueSpartan-Regular.ttf",
+            "./assets/fonts/LeagueSpartan-SemiBold.ttf",
+            "./assets/fonts/LeagueSpartan-Thin.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {

@@ -1,3 +1,4 @@
+import Nav from '@/components/nav';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from 'react';
@@ -29,6 +30,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
+      <Nav />
       <Stack
         screenOptions={{
           headerShown: false,

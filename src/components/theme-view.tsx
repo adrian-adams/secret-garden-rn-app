@@ -22,7 +22,7 @@ export default function ThemeView({
         <SafeAreaView
             edges={edges}
             className={clsx(
-                'flex-1 bg-sg-locator',
+                'flex-1 bg-white',
                 padded ? 'p-5' : '',
                 className
             )}

@@ -15,7 +15,7 @@ export const TABS: TabsProps[] = [
         mdIcon: "home"
     },
     {
-        name: "shop/shop",
+        name: "shop",
         label: "Shop",
         sfIcon: "storefront.fill",
         mdIcon: "storefront"

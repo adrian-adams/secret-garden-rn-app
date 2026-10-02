@@ -1,4 +1,5 @@
 import Nav from '@/components/nav';
+import { PortalHost } from '@rn-primitives/portal';
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from 'react';
@@ -36,6 +37,7 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
+      <PortalHost />
     </SafeAreaProvider>
   )
 }

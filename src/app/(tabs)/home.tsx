@@ -4,8 +4,8 @@ import Separator from '@/components/separator';
 import ThemeView from '@/components/theme-view';
 import { Image } from 'expo-image';
 import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
-import { mapProduct, useHygraphQueryResult } from '../../../lib/hooks/useHygraphQuery';
-import { productQuery } from '../../../lib/hygraph/queries/products';
+import { useHygraphQueryResult } from '../../../lib/hooks/useHygraphQuery';
+import { Mapper, productQuery } from '../../../lib/hygraph/queries/products';
 
 const styles = StyleSheet.create({
     hero: {
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Home() {
-    const { data: products, loading, error } = useHygraphQueryResult(productQuery, mapProduct);
+    const { data: products, loading, error } = useHygraphQueryResult(productQuery, Mapper);
 
     return (
         <ThemeView padded={false} edges={[]}>
@@ -31,10 +31,10 @@ export default function Home() {
                     />
                 </View>
                 <Separator size={2.5} />
-                <View className='px-5 gap-4'>
+                <View className='gap-4 px-5'>
                     <Heading
                         title="New Arrivals"
-                        href="/shop/shop"
+                        href="/(tabs)/shop"
                         linkTitle="View All"
                         desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                     />
@@ -48,10 +48,10 @@ export default function Home() {
                     />
                 </View>
                 <Separator />
-                <View className='px-5 gap-4'>
+                <View className='gap-4 px-5'>
                     <Heading
                         title="Featured Plants"
-                        href="/shop/shop"
+                        href="/(tabs)/shop"
                         linkTitle="View All"
                         desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                     />

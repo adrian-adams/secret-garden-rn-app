@@ -11,19 +11,23 @@ export interface ProductsApiResponse {
         id: string
         petFriendly: boolean
         plantColour: {
-            id: string
+          id: string
+          plantColour: {
             colours: string[]
+          }
         }
         plantSize: {
             id: string
-            plantSizes: PlantsSize[]
+            plantSizes: {
+              sizes: string[]
+            }
         }
         price: number
         productInfo: string
         qty: number
         slug: string
         sun: string
-        tags: Tags
+        tags: Tags[]
         title: string
         water: string
         thumbnail: {
@@ -35,10 +39,20 @@ export interface ProductsApiResponse {
 };
 
 export type ProductUI = Omit<ProductsApiResponse["products"][number], "plantColour" | "plantSize"> & {
-  plantColour: string[]
-  plantSize: PlantsSize[]
+  plantColour: {
+    value: string
+    label: string
+  }[]
+  plantSize: {
+    value: string
+    label: string
+  }[]
   imageUrl: string
 };
+
+const toOptions = (values?: string[] | null) => (
+  (values ?? []).filter(Boolean).map((v) => ({ label: v, value: v }))
+);
 
 export const mapProducts = (data: ProductsApiResponse['products'][number]): ProductUI => ({
     availability: data.availability ?? false,
@@ -47,14 +61,14 @@ export const mapProducts = (data: ProductsApiResponse['products'][number]): Prod
     deliveryTime: data.deliveryTime ?? "Days",
     id: data.id ?? crypto.randomUUID(),
     petFriendly: data.petFriendly ?? false,
-    plantColour: data.plantColour.colours ?? [],
-    plantSize: data.plantSize.plantSizes ?? "Medium",
+    plantColour: toOptions(data.plantColour?.plantColour?.colours),
+    plantSize: toOptions(data.plantSize?.plantSizes?.sizes),
     price: data.price ?? 0,
     productInfo: data.productInfo ?? "",
     qty: data.qty ?? 0,
     slug: data.slug ?? "",
     sun: data.sun ?? "",
-    tags: data.tags ?? "Shop",
+    tags: data.tags ?? "shop",
     title: data.title ?? "", 
     water: data.water ?? "",
     thumbnail: data.thumbnail ?? [],
@@ -95,7 +109,7 @@ export const productQuery = `query ProductsQuery {
   }
 }`
 
-export function mapProduct(raw: {products: Parameters<typeof mapProducts>[0][]}) {
+export function Mapper(raw: {products: Parameters<typeof mapProducts>[0][]}) {
     return raw.products.map(mapProducts);
 }
 

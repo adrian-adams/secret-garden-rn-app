@@ -1,4 +1,4 @@
-import { clsx } from 'clsx';
+import { cn } from '../../lib/utils';
 import { styled } from 'nativewind';
 import { type ReactNode } from 'react';
 import { SafeAreaView as RNSafeAreaView, type Edge } from 'react-native-safe-area-context';
@@ -21,7 +21,7 @@ export default function ThemeView({
     return (
         <SafeAreaView
             edges={edges}
-            className={clsx(
+            className={cn(
                 'flex-1 bg-white',
                 padded ? 'p-5' : '',
                 className

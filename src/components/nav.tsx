@@ -1,22 +1,27 @@
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
+import { ShoppingBasket } from 'lucide-react-native';
 import { styled } from 'nativewind';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
+import { useCartStore } from '../../lib/zustand/cart';
+import { Badge } from './ui/badge';
 
 const SafeAreaView = styled(RNSafeAreaView);
 
+const styles = StyleSheet.create({
+    image: {
+        width: 125,
+        height: 75
+    }
+});
+
 export default function Nav() {
-    const styles = StyleSheet.create({
-        image: {
-            width: 125,
-            height: 75
-        }
-    })
+    const cartItems = useCartStore((state) => state.items);
 
     return (
         <SafeAreaView edges={['top']}>
-            <View className='bg-sg-locator flex-row items-center justify-between'>
+            <View className='flex-row items-center justify-between bg-sg-locator'>
                 <View>
                     <Link href="/(tabs)/home">
                         <Image
@@ -26,10 +31,19 @@ export default function Nav() {
                             style={styles.image}
                         />
                     </Link>
-
                 </View>
-                <View>
-                    <Text className='text-black text-4xl'>Some Tex</Text>
+                <View className='relative mx-4 w-28 shadow-2xs outline-1 outline-sg-green rounded-2xl shadow-sg-green'>
+                    <Badge className='absolute px-3 pb-0 bg-black right-1 top-1'>
+                        <Text className='text-xl text-sg-lightgreen font-ls-medium'>
+                            {cartItems.length}
+                        </Text>
+                    </Badge>
+                    <Link
+                        href='/(tabs)/shop/cart'
+                        className='p-1'
+                    >
+                        <ShoppingBasket size={45} />
+                    </Link>
                 </View>
             </View>
         </SafeAreaView>

@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
 import { fetchHygraph } from '../hygraph/config';
-import { mapProducts } from '../hygraph/queries/products';
 
 type UseHygraphQueryResult<T> = {
     data: T | null
     loading: boolean
     error: string | null
-}
-
-export function mapProduct(raw: {products: Parameters<typeof mapProducts>[0][]}) {
-    return raw.products.map(mapProducts);
 }
 
 export function useHygraphQueryResult<TRaw, TMapped>( query: string, mapper: (raw: TRaw) => TMapped ): UseHygraphQueryResult<TMapped> {

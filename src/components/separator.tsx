@@ -22,7 +22,7 @@ export default function Separator({
             backgroundColor: color,
             marginTop: size,
             marginBottom: size,
-            ...(horizontal ? { height: 5, width: "100%" } : { width: 5, height: "100%" }),
+            ...(horizontal ? { height: 2.5, width: "100%" } : { width: 5, height: "100%" }),
         }
     })
 

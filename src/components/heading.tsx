@@ -1,23 +1,28 @@
+import { Text } from '@/components/ui/text';
 import { Link, type Href } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 export default function Heading({ title, href, linkTitle, desc }: { title: string, href: Href, linkTitle: string, desc?: string }) {
     return (
         <View className="flex-col gap-3">
-            <View className='w-full flex-row items-center justify-between border-b-2 border-sg-green pb-2'>
-                <Text className='font-ls-medium text-2xl'>{title}</Text>
+            <View className='flex-row items-center justify-between w-full pb-2 border-b-2 border-sg-green'>
+                <Text className='text-2xl font-ls-medium'>{title}</Text>
                 <Link
                     href={href}
-                    className='utility-button-primary font-ls-extrabold'
+                    className='utility-button-primary'
                 >
-                    {linkTitle}
+                    <Text className='text-white'>
+                        {linkTitle}
+                    </Text>
                 </Link>
             </View>
-            <View>
-                <Text className='font-ls-medium text-lg leading-tight text-gray-700'>
-                    {desc}
-                </Text>
-            </View>
+            {desc &&
+                <View>
+                    <Text className='text-lg leading-tight text-gray-700 font-ls-medium'>
+                        {desc}
+                    </Text>
+                </View>
+            }
         </View>
     )
 }

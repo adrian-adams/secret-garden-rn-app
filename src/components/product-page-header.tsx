@@ -1,12 +1,9 @@
-import { Image } from 'expo-image';
-import { Link } from 'expo-router';
-import { MoveLeft } from 'lucide-react-native';
-import { Text, View, type ImageStyle, type StyleProp } from 'react-native';
-import { Badge } from './ui/badge';
-import { type ImageSource } from 'expo-image';
-import type { SFSymbol } from 'sf-symbols-typescript';
 import type { SharedRefType } from 'expo';
+import { Image, type ImageSource } from 'expo-image';
 import type { Href } from 'expo-router';
+import { View, type ImageStyle, type StyleProp } from 'react-native';
+import type { SFSymbol } from 'sf-symbols-typescript';
+import BackButton from './back-button';
 
 interface ImageHeaderProps {
     source: ImageSource
@@ -21,20 +18,11 @@ interface ImageHeaderProps {
     href: Href
 }
 
-export default function ImageHeader({ source, style, href }: ImageHeaderProps) {
+export default function ImageHeader({ source, style }: ImageHeaderProps) {
     return (
         <View className='relative'>
-            <Image source={source} style={style} />
-            <Badge className='absolute w-30 top-5 left-5 bg-sg-lightgreen ring-1 ring-black'>
-                <Link href={href} className='flex flex-row items-center justify-center gap-4'>
-                    <Text>
-                        <MoveLeft size={20} />
-                    </Text>
-                    <Text className='text-xl font-ls-extrabold'>
-                        Back
-                    </Text>
-                </Link>
-            </Badge>
+            <Image source={source} style={style} loading='eager' />
+            <BackButton className='absolute top-5 left-5' />
         </View>
     )
 }

@@ -1,18 +1,18 @@
+import { CustomPressable, CustomText } from '@/components/custom';
 import { ProductAccordion, type AccordionProps } from '@/components/product-accordion';
-import ImageHeader from '@/components/product-page-header';
 import QtyControls from '@/components/product-qty-controls';
 import { ProductSelect } from '@/components/product-select';
 import Separator from '@/components/separator';
 import ThemeView from '@/components/theme-view';
-import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useLocalSearchParams } from 'expo-router';
 import { Droplet, FaceSlightlySmiling, ListSortDescending, Sun, Van } from 'lucide-react-native';
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useHygraphQueryResult } from '../../../../lib/hooks/useHygraphQuery';
 import { Mapper, productQuery } from '../../../../lib/hygraph/queries/products';
 import { useCartStore } from '../../../../lib/zustand/cart';
+import { Skeleton } from '../../../components/ui/skeleton';
 
 const styles = StyleSheet.create({
     image: {
@@ -32,9 +32,14 @@ const styles = StyleSheet.create({
 });
 
 const defaultText = "Check back for more info";
+const ImageHeader = lazy(() => import('../../../components/product-page-header'));
 
 export default function Product() {
     const params = useLocalSearchParams<{ slug: string }>();
+    const addItem = useCartStore((state) => state.addItem);
+    const { data: products, loading, error } = useHygraphQueryResult(productQuery, Mapper);
+    const item = products?.find((i) => i.slug === params.slug);
+
     const [singularItem, setSingularItem] = useState<CartItem>({
         id: "",
         slug: "",
@@ -47,9 +52,6 @@ export default function Product() {
         error: "",
         loadingItem: false
     });
-    const addItem = useCartStore((state) => state.addItem);
-    const { data: products, loading, error } = useHygraphQueryResult(productQuery, Mapper);
-    const item = products?.find((i) => i.slug === params.slug);
     const selectSize = item?.plantSize ?? [];
     const selectColors = item?.plantColour ?? [];
 
@@ -82,11 +84,20 @@ export default function Product() {
     ];
 
     function handleAddToCart() {
+        if (!item) {
+            return
+        };
         if (!singularItem.colour || !singularItem.size) {
             setSingularItem({
                 ...singularItem,
-                error: singularItem.error = "Please select a colour and size"
+                error: singularItem.error = "Please enter a Colour and Size"
             });
+            setTimeout(() => {
+                setSingularItem({
+                    ...singularItem,
+                    error: singularItem.error = ""
+                });
+            }, 5000)
             return;
         }
 
@@ -135,11 +146,15 @@ export default function Product() {
                     </View>
                 ) : (
                     <>
-                        <ImageHeader
-                            source={item?.imageUrl ?? ""}
-                            style={styles.image}
-                            href='/(tabs)/shop'
-                        />
+                        <View className='h-[350px]'>
+                            <Suspense fallback={<SkeletonPreview />}>
+                                <ImageHeader
+                                    source={item?.imageUrl ?? ""}
+                                    style={styles.image}
+                                    href='/(tabs)/shop'
+                                />
+                            </Suspense>
+                        </View>
                         <View className='p-4'>
                             <Text className='text-4xl font-ls-extrabold'>{item?.title}</Text>
                             <Separator />
@@ -191,20 +206,25 @@ export default function Product() {
                                     </View>
                                 }
                                 <View>
-                                    <Button
-                                        onPress={handleAddToCart}
-                                        variant='addToCart'
-                                    // disabled={cartItems.length === 0}
-                                    >
-                                        <Text>
-                                            {singularItem.loadingItem ? (
-                                                <>Adding to cart...</>
-                                            ) : (
-                                                <>Add to cart</>
-                                            )
-                                            }
-                                        </Text>
-                                    </Button>
+                                    {item ?
+                                        <CustomPressable href='/shop/cart'>
+                                            <CustomText>
+                                                View Cart
+                                            </CustomText>
+                                        </CustomPressable>
+                                        :
+                                        <CustomPressable
+                                            onPress={handleAddToCart}
+                                        >
+                                            <CustomText>
+                                                {singularItem.loadingItem ?
+                                                    <>Adding to cart...</>
+                                                    :
+                                                    <>Add to Cart</>
+                                                }
+                                            </CustomText>
+                                        </CustomPressable>
+                                    }
                                 </View>
                             </View>
                             <Separator />
@@ -215,4 +235,16 @@ export default function Product() {
             </ScrollView>
         </ThemeView >
     )
+}
+
+function SkeletonPreview() {
+    return (
+        <View className="flex flex-row items-center gap-4">
+            <Skeleton className="w-12 h-12 rounded-full" />
+            <View className="gap-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+            </View>
+        </View>
+    );
 }

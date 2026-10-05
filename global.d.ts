@@ -15,9 +15,9 @@ declare global {
         colour: string
         size: string
         image: string
-        unitPrice: number | string
+        unitPrice: number
         orderQuantity: number
-        error?: string
+        error?: string | null
         loadingItem?: boolean
     }
 }

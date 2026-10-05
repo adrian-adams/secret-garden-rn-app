@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { TABS } from '../../../lib/data/tabs';
 
@@ -29,7 +30,7 @@ export default function TabLayout() {
                         </NativeTabs.Trigger.Label>
                     </NativeTabs.Trigger>
                 ))}
-            </NativeTabs >
+            </NativeTabs>
         </>
     );
 }

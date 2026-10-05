@@ -11,8 +11,12 @@ const gap: number = 30;
 
 const styles = StyleSheet.create({
     listContent: {
-        gap: gap,
-        padding: 10
+        gap: 16,
+        padding: 16,
+        paddingBottom: 32,
+    },
+    row: {
+        gap: 16
     },
     columnWrapper: {
         gap: gap
@@ -44,10 +48,11 @@ export default function Shop() {
                         data={products?.filter(i => i.title?.toLowerCase().includes(search.toLowerCase()) && i.tags?.includes("shop"))}
                         renderItem={({ item }) => <ProductCard data={item} type="Shop" />}
                         keyExtractor={item => item.id}
-                        horizontal={false}
+                        // horizontal={false}
                         numColumns={2}
+                        columnWrapperStyle={styles.row}
                         contentContainerStyle={styles.listContent}
-                        columnWrapperStyle={styles.columnWrapper}
+                        showsVerticalScrollIndicator={false}
                     />
                 </>
 
@@ -82,7 +87,6 @@ function SearchBar({
                     <Text className='font-ls-medium'>{lengthQ} available</Text>
                 }
             </View>
-
         </View>
     )
 }

@@ -1,3 +1,5 @@
+import BackButton from '@/components/back-button';
+import { CustomPressable, CustomText } from '@/components/custom';
 import QtyControls from '@/components/product-qty-controls';
 import Separator from '@/components/separator';
 import ThemeView from '@/components/theme-view';
@@ -7,34 +9,66 @@ import { Dot, Trash } from 'lucide-react-native';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useCartStore } from '../../../../lib/zustand/cart';
 
+
 const styles = StyleSheet.create({
     image: {
         width: 80,
         height: 100,
         borderRadius: 10
     }
-})
+});
 
 export default function Cart() {
-    const items = useCartStore((state) => state.items);
+    const data = useCartStore(state => state.items)
+    const items = useCartStore((state) => state.items.find(i => i.id));
+    const { unitPrice } = items ?? {}
+    const subTotal = useCartStore((state) => state.subtotal);
+    const totalItems = useCartStore((state) => state.totalItems());
+    const clearCart = useCartStore((state) => state.clearCart);
 
     return (
-        <ThemeView>
-            <View className='flex-row'>
-                <FlatList
-                    data={items}
-                    keyExtractor={items => items.id}
-                    renderItem={({ item }) => <CartItem data={item} />}
-                    ItemSeparatorComponent={<Separator color='black' size={15} />}
-                />
+        <ThemeView edges={[]} className='flex flex-col'>
+            <View className='flex flex-row items-center justify-between'>
+                <BackButton />
+                <CustomPressable onPress={clearCart}>
+                    <CustomText>
+                        Clear Cart
+                    </CustomText>
+                </CustomPressable>
+            </View>
+            <Separator />
+            {totalItems === 0 ?
+                (
+                    <View className='flex items-center justify-center flex-1 w-full'>
+                        <CustomText size='4xl' className='text-black'>
+                            You cart is empty
+                        </CustomText>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={data}
+                        keyExtractor={data => data.id}
+                        renderItem={({ item }) => <CartItem data={item} />}
+                        ItemSeparatorComponent={<Separator color='black' size={15} />}
+                    />
+                )
+            }
+            <Separator size={3} />
+            <View>
+                <CustomPressable disabled={Number(totalItems) === 0}>
+                    <CustomText>Go to Checkout - ${subTotal()}</CustomText>
+                </CustomPressable>
             </View>
         </ThemeView>
     )
-}
+};
 
 function CartItem({ data }: { data: CartItem }) {
-    const itemTotal = data.orderQuantity * Number(data.unitPrice);
+    const item = useCartStore((state) => state.items.find(i => i.id === data.id));
+    const { orderQuantity, id } = item ?? {};
+    const updateQty = useCartStore((state) => state.updateQuantity);
     const deleteItem = useCartStore((state) => state.deleteItem);
+    const subTotal = useCartStore((state) => state.subtotal);
 
     return (
         <View className='flex-row items-center justify-between gap-6'>
@@ -48,7 +82,7 @@ function CartItem({ data }: { data: CartItem }) {
                 {/* Title, Size, Colour, Delete */}
                 <View className='flex-row justify-between gap-4'>
                     <View className='flex-col flex-1'>
-                        <Text className='text-xl font-ls-medium'>{data.title}</Text>
+                        <CustomText align='left' size='xl'>{data.title}</CustomText>
                         <View className='flex-row items-center'>
                             <CartItemText text={`Size: ${data.size}`} />
                             <Dot size={10} />
@@ -63,16 +97,16 @@ function CartItem({ data }: { data: CartItem }) {
                 {/* Qty Controls, Price */}
                 <View className='flex-row items-center justify-between'>
                     <QtyControls
-                        quantity={data.orderQuantity}
-                        decrement={() => data.orderQuantity--}
-                        increment={() => data.orderQuantity++}
+                        quantity={Number(orderQuantity)}
+                        decrement={() => updateQty(id ?? "", (orderQuantity ?? 0) - 1)}
+                        increment={() => updateQty(id ?? "", (orderQuantity ?? 0) + 1)}
                     />
-                    <Text className='text-xl font-ls-medium'>${itemTotal}</Text>
+                    <Text className='text-xl font-ls-medium'>${Number(subTotal)}</Text>
                 </View>
             </View>
-        </View>
+        </View >
     )
-}
+};
 
 function CartItemText({ text }: { text: string }) {
     return (
@@ -80,4 +114,4 @@ function CartItemText({ text }: { text: string }) {
             {text}
         </Text>
     )
-}
+};

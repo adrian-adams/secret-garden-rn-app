@@ -13,6 +13,8 @@ export interface CartActions {
     updateQuantity: (id: string, orderQuantity: number) => void
     deleteItem: (id: string) => void
     clearCart: () => void
+    subtotal: () => number
+    totalItems: () => number
 }
 
 type CartStore = CartState & CartActions;
@@ -60,7 +62,8 @@ export const useCartStore = create<CartStore>()(
             updateQuantity: (id, orderQuantity) => set((state) => ({
                 items: orderQuantity <= 0
                     ? state.items.filter(i => i.id !== id)
-                    : state.items.map(i => i.id === id ? { ...i, orderQuantity } : i)
+                    : state.items.map(i => i.id === id ? { ...i, orderQuantity } : i
+                    )
             })),
 
             /*************************************************************************************************/
@@ -73,9 +76,21 @@ export const useCartStore = create<CartStore>()(
 
             clearCart: () => set({
                 items: []
-            })
+            }),
 
             /*************************************************************************************************/
+
+            subtotal: () => {
+                const {items} = get();
+                return items.reduce((sum, i) => sum + i.unitPrice * i.orderQuantity, 0)
+            },
+
+            /*************************************************************************************************/
+
+            totalItems: () => {
+                const {items} = get();
+                return items.reduce((sum, i) => sum + i.orderQuantity, 0)
+            }
         }),
         {
             name: 'cart-storage',

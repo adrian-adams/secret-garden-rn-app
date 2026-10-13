@@ -8,7 +8,7 @@ import { Text } from '@/components/ui/text';
 import { useLocalSearchParams } from 'expo-router';
 import { Droplet, FaceSlightlySmiling, ListSortDescending, Sun, Van } from 'lucide-react-native';
 import { Suspense, lazy, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { useHygraphQueryResult } from '../../../../lib/hooks/useHygraphQuery';
 import { Mapper, productQuery } from '../../../../lib/hygraph/queries/products';
 import { useCartStore } from '../../../../lib/zustand/cart';
@@ -36,10 +36,16 @@ const ImageHeader = lazy(() => import('../../../components/product-page-header')
 
 export default function Product() {
     const params = useLocalSearchParams<{ slug: string }>();
-    const addItem = useCartStore((state) => state.addItem);
+    // Hygraph
     const { data: products, loading, error } = useHygraphQueryResult(productQuery, Mapper);
-    const item = products?.find((i) => i.slug === params.slug);
+    const item = products?.find(i => i.slug === params.slug);
+    // Zustand
+    const cartItem = useCartStore(s => s.items.find(i => i.id === params.slug));
+    const { orderQuantity } = cartItem ?? {};
+    const addItem = useCartStore(s => s.addItem);
+    const updateItem = useCartStore(s => s.updateItem);
 
+    // State
     const [singularItem, setSingularItem] = useState<CartItem>({
         id: "",
         slug: "",
@@ -146,8 +152,13 @@ export default function Product() {
                     </View>
                 ) : (
                     <>
-                        <View className='h-[350px]'>
-                            <Suspense fallback={<SkeletonPreview />}>
+                        <View className='h-[350px] bg-black'>
+                            <Suspense fallback={
+                                <View>
+                                    <CustomText>Loading...</CustomText>
+                                    <ActivityIndicator />
+                                </View>
+                            }>
                                 <ImageHeader
                                     source={item?.imageUrl ?? ""}
                                     style={styles.image}
@@ -156,7 +167,7 @@ export default function Product() {
                             </Suspense>
                         </View>
                         <View className='p-4'>
-                            <Text className='text-4xl font-ls-extrabold'>{item?.title}</Text>
+                            <CustomText align='left' size='4xl' font='extrabold'>{item?.title}</CustomText>
                             <Separator />
                             <View className='gap-4'>
                                 <View className='flex-row items-center justify-between'>
@@ -178,6 +189,7 @@ export default function Product() {
                                     }
                                     <Text className='text-3xl font-ls-medium'>${(item?.price ?? 1) * singularItem.orderQuantity}</Text>
                                 </View>
+
                                 <View className='flex-row items-center justify-between gap-2'>
                                     <ProductSelect
                                         data={selectSize}
@@ -206,10 +218,17 @@ export default function Product() {
                                     </View>
                                 }
                                 <View>
-                                    {item ?
-                                        <CustomPressable href='/shop/cart'>
+                                    {Number(orderQuantity) > 0 ?
+                                        <CustomPressable
+                                            onPress={() => updateItem(
+                                                cartItem?.id ?? "",
+                                                singularItem.orderQuantity,
+                                                singularItem.size ?? error,
+                                                singularItem.colour ?? error
+                                            )}
+                                        >
                                             <CustomText>
-                                                View Cart
+                                                Update Cart
                                             </CustomText>
                                         </CustomPressable>
                                         :

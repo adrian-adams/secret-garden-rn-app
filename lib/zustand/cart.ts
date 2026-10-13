@@ -10,7 +10,7 @@ export interface CartState {
 
 export interface CartActions {
     addItem: (item: Omit<CartItem, 'orderQuantity'>, orderQuantity?: number) => boolean
-    updateQuantity: (id: string, orderQuantity: number) => void
+    updateItem: (id: string, orderQuantity: number, size?: string, colour?: string) => void
     deleteItem: (id: string) => void
     clearCart: () => void
     subtotal: () => number
@@ -59,11 +59,15 @@ export const useCartStore = create<CartStore>()(
 
             /*************************************************************************************************/
 
-            updateQuantity: (id, orderQuantity) => set((state) => ({
+            updateItem: (id, orderQuantity, size, colour) => set((state) => ({
                 items: orderQuantity <= 0
                     ? state.items.filter(i => i.id !== id)
-                    : state.items.map(i => i.id === id ? { ...i, orderQuantity } : i
-                    )
+                    : state.items.map(i => i.id === id ? {
+                        ...i,
+                        ...(orderQuantity !== undefined ? { orderQuantity } : {}),
+                        ...(size !== undefined ? { size } : {}),
+                        ...(colour !== undefined ? { colour } : {})
+                    } : i)
             })),
 
             /*************************************************************************************************/
@@ -82,7 +86,7 @@ export const useCartStore = create<CartStore>()(
 
             subtotal: () => {
                 const {items} = get();
-                return items.reduce((sum, i) => sum + i.unitPrice * i.orderQuantity, 0)
+                return items.reduce((sum, i) => sum + i.orderQuantity * i.unitPrice , 0)
             },
 
             /*************************************************************************************************/

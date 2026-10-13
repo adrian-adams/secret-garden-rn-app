@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
 })
 
 export function ProductCard({ data, type, className }: FeaturedData) {
-    // const { data: products, loading, error } = useHygraphQueryResult(productQuery, Mapper);
     const item = useCartStore((s) => s.items.find(i => i.id === data.slug));
 
     return (

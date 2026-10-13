@@ -68,12 +68,14 @@ interface CustomPressableProps extends PressableProps {
     href?: Href
     backgroundColour?: keyof typeof bgColour
     className?: string
+    title?: string
 }
 
 export function CustomPressable({
     backgroundColour = "lightgreen",
     className,
     href,
+    title,
     ...props
 }: CustomPressableProps) {
     const pressable = (

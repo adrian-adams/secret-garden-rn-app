@@ -1,4 +1,3 @@
-import BackButton from '@/components/back-button';
 import { CustomPressable, CustomText } from '@/components/custom';
 import QtyControls from '@/components/product-qty-controls';
 import Separator from '@/components/separator';
@@ -8,7 +7,7 @@ import { Image } from 'expo-image';
 import { Dot, Trash } from 'lucide-react-native';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useCartStore } from '../../../../lib/zustand/cart';
-
+import BackButton from '../../../components/back-button';
 
 const styles = StyleSheet.create({
     image: {
@@ -19,12 +18,10 @@ const styles = StyleSheet.create({
 });
 
 export default function Cart() {
-    const data = useCartStore(state => state.items)
-    const items = useCartStore((state) => state.items.find(i => i.id));
-    const { unitPrice } = items ?? {}
-    const subTotal = useCartStore((state) => state.subtotal);
+    const data = useCartStore(state => state.items);
     const totalItems = useCartStore((state) => state.totalItems());
     const clearCart = useCartStore((state) => state.clearCart);
+    const subTotal = useCartStore(s => s.subtotal());
 
     return (
         <ThemeView edges={[]} className='flex flex-col'>
@@ -55,8 +52,8 @@ export default function Cart() {
             }
             <Separator size={3} />
             <View>
-                <CustomPressable disabled={Number(totalItems) === 0}>
-                    <CustomText>Go to Checkout - ${subTotal()}</CustomText>
+                <CustomPressable disabled={Number(totalItems) === 0} href='/shop/checkout'>
+                    <CustomText>Go to Checkout - ${subTotal}</CustomText>
                 </CustomPressable>
             </View>
         </ThemeView>
@@ -65,10 +62,9 @@ export default function Cart() {
 
 function CartItem({ data }: { data: CartItem }) {
     const item = useCartStore((state) => state.items.find(i => i.id === data.id));
-    const { orderQuantity, id } = item ?? {};
-    const updateQty = useCartStore((state) => state.updateQuantity);
+    const { orderQuantity, unitPrice, id } = item ?? {};
+    const updateQty = useCartStore((state) => state.updateItem);
     const deleteItem = useCartStore((state) => state.deleteItem);
-    const subTotal = useCartStore((state) => state.subtotal);
 
     return (
         <View className='flex-row items-center justify-between gap-6'>
@@ -101,7 +97,7 @@ function CartItem({ data }: { data: CartItem }) {
                         decrement={() => updateQty(id ?? "", (orderQuantity ?? 0) - 1)}
                         increment={() => updateQty(id ?? "", (orderQuantity ?? 0) + 1)}
                     />
-                    <Text className='text-xl font-ls-medium'>${Number(subTotal)}</Text>
+                    <CustomText>${Number(orderQuantity) * Number(unitPrice)}</CustomText>
                 </View>
             </View>
         </View >
